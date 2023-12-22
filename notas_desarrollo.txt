@@ -1,0 +1,3 @@
+Rutas
+Ruta para el controlador de usuarios
+$route['usuarios'] = 'UsuariosController/DevolverUsuarios';

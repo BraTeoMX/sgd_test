@@ -1,0 +1,31 @@
+@extends('layouts.main')
+
+@section('styleBFile')
+
+<!-- Color Box -->
+<link href="{{ asset('colorbox/colorbox.css') }}" rel="stylesheet">
+
+@endsection
+
+@section('content')
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Autorización de Vacaciones</h3>
+            </div>
+            {!! Form::open(['route'=>'vacaciones.autorizar', 'method'=>'GET', 'files'=>TRUE ]) !!}
+            <div>
+                <input type="text" name="noEmpleado" placeholder="Numero de empleado">
+            </div>
+            <div>
+                <input type="submit" value="Buscar" class="bt btn-primary">
+            </div>
+            {!! form::close() !!}
+        </div>
+    </div>
+</div>
+
+@endsection
+

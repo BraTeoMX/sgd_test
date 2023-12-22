@@ -1,0 +1,79 @@
+.login-register {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+}
+.login-sidebar .login-box {
+    margin-top: 0px !important;
+}
+.login-sidebar .login-box {
+    left: 0px;
+    position: absolute;
+    height: 100%;
+    width: 400px;
+    margin: 0 auto;
+    margin-top: 0px;
+}
+.card-body {
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+    word-wrap: break-word;
+}
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 0.5rem;
+    margin-top: 0;
+    font-family: "roboto", sans-serif;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    text-shadow: none;
+    color: #000
+}
+.btn-primary, .btn-primary:hover {
+    color: #fff;
+    background-color: #765341;
+    border-color: #765341;
+}
+.text-primary {
+    color: #795300!important
+}
+.btn-link {
+    color: #795300!important
+}
+.btn-link:hover {
+    color: #795300!important
+}
+.help-block {
+    color: #bf2810 !important
+}
+.navbar.default-layout .navbar-brand-wrapper {
+    transition: width 0.25s ease, background 0.25s ease;
+    -webkit-transition: width 0.25s ease, background 0.25s ease;
+    -moz-transition: width 0.25s ease, background 0.25s ease;
+    -ms-transition: width 0.25s ease, background 0.25s ease;
+    background: #795300!important;
+    width: 270px;
+    height: 63px;
+}
+.sidebar {
+    min-height: calc(100vh - 63px);
+    background: linear-gradient(to top, #765341, #765341) !important;
+    font-family: "roboto", sans-serif;
+    padding: 0;
+    width: 270px;
+    z-index: 11;
+    transition: width 0.25s ease, background 0.25s ease;
+    -webkit-transition: width 0.25s ease, background 0.25s ease;
+    -moz-transition: width 0.25s ease, background 0.25s ease;
+    -ms-transition: width 0.25s ease, background 0.25s ease;
+}
+.sidebar > .nav:not(.sub-menu) > .nav-item:hover:not(.nav-profile):not(.hover-open) > .nav-link:not([aria-expanded="true"]) {
+    background: #f89c24 !important;
+    padding-left: 65px;
+}
