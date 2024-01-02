@@ -13,6 +13,15 @@ class Tbl_Empleado_SIA extends Model
      * @var string
      */
     protected $table = 'Tbl_Empleados_SIA';
+    public function departamentoRelacionado()
+    {
+        return $this->belongsTo(Departamentos::class, 'Departamento', 'id_Departamento');
+    }
+
+    public function puestoRelacionado()
+    {
+        return $this->belongsTo('App\Puestos', 'Puesto', 'id_puesto')->where('Papel', 'EntPH');
+    }
 
     /**
      * The "type" of the auto-incrementing ID.

@@ -429,6 +429,17 @@
                                 </a>
                             </li>
                         </ul>
+                        {{--Inicio Apartado entrega papel --}}
+                        <ul class="js-navbar-vertical-aside-submenu nav nav-sub">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('eventos.VistaPapel') }}" title="Reporte Papel"
+                                    data-placement="left">
+                                    <i class="tio-circle nav-indicator-icon"></i>
+                                    <span class="text-truncate">Papel </span>
+                                </a>
+                            </li>
+                        </ul>
+                        {{--Fin Apartado Entrega papel--}}
                     </li>
                     @endif
 

@@ -5,6 +5,7 @@ use App\Http\Controllers\TblEmpleadoSIA;
 use App\Http\Controllers\Tbl_Empleado_SIA;
 use App\Mail\envioCorreo;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\VistaPapelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -222,3 +223,9 @@ Route::post('GenerarReportesExcel', 'ReportesEventosController@exportarExcel')->
 //Enviar a Update Puestos
 Route::get('UpdatePuestos','EventoController@UpdatePuestos')->name('eventos.UpdatePuestos');
 Route::post('ActualizaPapel', 'EventoController@actualizarPapel')->name('eventos.actualizarPapel');
+
+//Rutas para Papel - pensado en una vista independiente
+Route::get('VistaPapel','VistaPapelController@VistaPapel')->name('eventos.VistaPapel');
+
+// Ruta para procesar el formulario
+Route::post('RegistroVistaPapel', 'VistaPapelController@RegistroVistaPapel')->name('eventos.RegistroVistaPapel');
