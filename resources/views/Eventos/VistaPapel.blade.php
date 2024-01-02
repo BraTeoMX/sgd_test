@@ -82,20 +82,24 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @isset($ConteoRegistroIxtlahuaca)
                                         <tr>
                                             <td scope="row">Ixtlahuaca</td>
                                             <td>{{ $ConteoRegistroIxtlahuaca }}</td>
-                                            <td>{{ $RegistroIxtlahuacaTotal }}</td>
+                                            <td># </td>
                                         </tr>
+                                        @endisset
+                                        @isset($ConteoRegistroSanBartolo)
                                         <tr>
                                             <td scope="row">San Bartolo</td>
                                             <td>{{ $ConteoRegistroSanBartolo }}</td>
-                                            <td>{{ $RegistroSanBartoloTotal }}</td>
+                                            <td>#</td>
                                         </tr>
+                                        @endisset
                                         <tr>
                                             <td scope="row"><strong>Total General</strong></td>
-                                            <td>{{ $ConteoRegistros }}</td>
-                                            <td>{{ $ConteoRegistrosTotal }}</td>
+                                            <td>{{$ConteoRegistros}}</td>
+                                            <td> # </td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -138,51 +142,47 @@
     <script src="sweetalert2.all.min.js"></script>
     <script>
         $(document).ready(function() {
-            if ($('#auxiliar').val() == 1) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'success',
-                    title: 'Registro guardado con exito!<br>' + $('#datos').val(),
-                    showConfirmButton: false,
-                    timer: 1000
-                })
-            } else {
-                if ($('#auxiliar').val() == 0)
+            var auxiliar = "{{ session('auxiliar') }}"; // Leer el valor de la sesión
+            var datos = "{{ session('datos') }}"; // Asumiendo que también estás enviando 'datos' si es necesario
+
+            switch(auxiliar) {
+                case '0':
                     Swal.fire({
                         position: 'center',
                         icon: 'error',
                         title: 'No se encontraron datos para el registro',
                         showConfirmButton: false,
                         timer: 1000
-                    })
-            }
-            if ($('#auxiliar').val() == 3) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'warning',
-                    title: 'Ya cuenta con registro existente!<br>' + $('#datos').val(),
-                    showConfirmButton: false,
-                    timer: 1000
-                })
-            }
-            if ($('#auxiliar').val() == 5) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: 'Empleado no corresponde al puesto<br>' + $('#datos').val(),
-                    showConfirmButton: false,
-                    timer: 1000
-                })
-            }
-            if ($('#auxiliar').val() == 6) {
-                Swal.fire({
-                    position: 'center',
-                    icon: 'error',
-                    title: 'Nuevo ingreso, no le corresponde despensa 🛒<br>fecha de ingreso:' + $('#ing')
-                        .val() + '<br>' + $('#datos').val(),
-                    showConfirmButton: false,
-                    timer: 1000
-                })
+                    });
+                    break;
+                case '1':
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Registro guardado con exito!<br>' + datos,
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                    break;
+                
+                case '2':
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'warning',
+                        title: datos +'<br>Ya confirmó su asistencia!',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                    break;
+                case '3':
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'info',
+                        title: datos +'<br>Puesto No permitido',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                    break;
             }
         });
     </script>
@@ -219,104 +219,7 @@
             });
         });
     </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Obtiene elementos necesarios
-            var tipoEventoSelect = document.getElementById("tipo_evento");
-            var tituloEvento = document.querySelector(".card-header h1");
-            var eventoOptions = document.getElementById("tipo_evento").getElementsByTagName(
-                'option'); // Obtén todas las opciones
-
-            // Escucha el evento de cambio en el menú desplegable
-            tipoEventoSelect.addEventListener("change", function() {
-                // Obtiene el valor seleccionado
-                var selectedValue = tipoEventoSelect.value;
-
-                // Busca el texto correspondiente al valor seleccionado
-                var selectedText = "";
-                for (var i = 0; i < eventoOptions.length; i++) {
-                    if (eventoOptions[i].value === selectedValue) {
-                        selectedText = eventoOptions[i].text;
-                        break;
-                    }
-                }
-
-                // Actualiza el título en la cabecera de la tarjeta con el tipo de evento
-                if (selectedValue !== "default") {
-                    tituloEvento.textContent = "Evento: " + selectedText;
-                } else {
-                    tituloEvento.textContent = "Evento: {{ $contador }}"; // Vuelve al título original
-                }
-            });
-        });
-    </script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Obtiene elementos necesarios
-            var tipoEventoSelect = document.getElementById("tipo_evento");
-            var tituloEvento = document.querySelector(".card-header h1");
-            var backhear = document.querySelector(".card-header");
-            var eventoOptions = document.getElementById("tipo_evento").getElementsByTagName(
-                'option'); // Obtén todas las opciones
-
-            // Escucha el evento de cambio en el menú desplegable
-            tipoEventoSelect.addEventListener("change", function() {
-                // Obtiene el valor seleccionado
-                var selectedValue = tipoEventoSelect.value;
-                backhear.classList.remove("title-selected1", "title-selected2", "title-selected3");
-
-                if (selectedValue !== "default") {
-                    // Si se selecciona una opción diferente de "default", aplica la clase para cambiar el color
-                    backhear.classList.add("title-selected");
-                }
-                if (selectedValue == "Sim") {
-                    backhear.classList.add("title-selected1");
-                }
-                if (selectedValue == "EntPH") {
-                    backhear.classList.add("title-selected2");
-                }
-                if (selectedValue == "EaDa6") {
-                    backhear.classList.add("title-selected3");
-                }
-                var selectedValue = tituloEvento.value;
-
-
-                var selectedValue = tipoEventoSelect.value;
-                registrarBtn.classList.remove("btn-Sim", "btn-sa12", "btn-EaDa6");
-
-                if (selectedValue !== "default") {
-                    // Si se selecciona una opción diferente de "default", aplica la clase para cambiar el color de fondo
-                    registrarBtn.classList.add("btn-selected");
-
-                    if (selectedValue === "Sim") {
-                        // Si el evento es "Fiesta", agrega la clase específica para "Fiesta"
-                        registrarBtn.classList.add("btn-Sim");
-                    } else if (selectedValue === "EntPH") {
-                        // Si el evento es "sa12", agrega la clase específica para "sa12"
-                        registrarBtn.classList.add("btn-sa12");
-                    } else if (selectedValue === "EaDa6") {
-                        // Si el evento es "sa12", agrega la clase específica para "sa12"
-                        registrarBtn.classList.add("btn-EaDa6");
-                    }
-                }
-                // Busca el texto correspondiente al valor seleccionado
-                var selectedText = "";
-                for (var i = 0; i < eventoOptions.length; i++) {
-                    if (eventoOptions[i].value === selectedValue) {
-                        selectedText = eventoOptions[i].text;
-                        break;
-                    }
-                }
-
-                // Actualiza el título en la cabecera de la tarjeta con el tipo de evento
-                if (selectedValue !== "default") {
-                    tituloEvento.textContent = "Evento: " + selectedText;
-                } else {
-                    tituloEvento.textContent = "Evento: {{ $contador }}"; // Vuelve al título original
-                }
-            });
-        });
-    </script>
+        
     <style>
         /* Estilo por defecto */
         .title-selected1 {
