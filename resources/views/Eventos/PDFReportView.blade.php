@@ -105,18 +105,18 @@
                                     <td>{{ $reporte->asistencia }}</td>
                                 @endif
                                 <td>{{ $reporte->created_at }}</td>
-                                @if (optional($datosReporte)['request']->tipo_evento == '5')
-                                <td>
-                                    @php
-                                    $numeroEmpleado = $reporte->no_empleados;
-                                    $rutaImagen = public_path('img/Firmas/' . $numeroEmpleado . '.jpg');
-                                    @endphp
-                                    @if (file_exists($rutaImagen))
-                                        <img height="50px" width="100px" src="data:image/jpg;base64,{{ base64_encode(file_get_contents($rutaImagen)) }}" alt="">
-                                    @else
-                                        Firma no encontrada
-                                    @endif
-                                </td>
+                                @if (optional($datosReporte)['optionsave'] == '5')
+                                    <td>
+                                        @php
+                                        $numeroEmpleado = $reporte->no_empleados;
+                                        $rutaImagen = public_path('img/Firmas/' . $numeroEmpleado . '.jpg');
+                                        @endphp
+                                        @if (file_exists($rutaImagen))
+                                            <img height="50px" width="100px" src="data:image/jpg;base64,{{ base64_encode(file_get_contents($rutaImagen)) }}" alt="">
+                                        @else
+                                            Firma no encontrada
+                                        @endif
+                                    </td>
 
                                 @endif
                             </tr>

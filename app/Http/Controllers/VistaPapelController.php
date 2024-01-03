@@ -7,14 +7,18 @@ use App\RegistrarAsistencias;
 use App\RegistrarEventos;
 use App\Tbl_Empleado_SIA;
 use App\RegistroPapelTemporal;
+use Carbon\Carbon;
 
 
 class VistaPapelController extends Controller
 {
-    public function VistaPapel(){ 
+    public function VistaPapel(){
+        $inicioMes = Carbon::now()->startOfMonth();
+        $finMes = Carbon::now()->endOfMonth(); 
 
-        $conteos = RegistroPapelTemporal::where('asistencia', 'Presente')
+        $conteos = RegistroPapelTemporal::where('asistencia', '2')
             ->whereIn('Planta', ['Intimark1', 'Intimark2'])
+            ->whereBetween('created_at', [$inicioMes, $finMes])
             ->groupBy('Planta')
             ->selectRaw('Planta, count(*) as total')
             ->get()
@@ -31,6 +35,9 @@ class VistaPapelController extends Controller
     }
 
     public function RegistroVistaPapel(Request $request){
+        $inicioMes = Carbon::now()->startOfMonth();
+        $finMes = Carbon::now()->endOfMonth();
+        //dd($inicioMes, $finMes);
         //dato_evento trae el numero de tag o numero de empleado
         $datos_evento = $request->datos_evento;
         // Obten el evento seleccionado
@@ -55,7 +62,7 @@ class VistaPapelController extends Controller
         // Verificar si ya existe un registro en RegistroPapelTemporal
         $registroExistente = RegistroPapelTemporal::where('no_empleados', $AsistenciaE->No_Empleado)
         ->where('No_Tag', $AsistenciaE->No_TAG)
-        ->where('id_evento', $evento->id)
+        ->whereBetween('created_at', [$inicioMes, $finMes])
         ->first();
         
         if ($registroExistente) {
@@ -67,14 +74,14 @@ class VistaPapelController extends Controller
         if ($AsistenciaE->puestoRelacionado && $AsistenciaE->puestoRelacionado->Papel == 'EntPH') {
             // Crear un nuevo registro en la tabla usando el modelo RegistroPapelTemporal
             RegistroPapelTemporal::create([
-                'id_evento' => $evento->id, // Asumiendo que $evento tiene un atributo 'id'
+                'id_evento' => 5, // Asumiendo que $evento tiene un atributo 'id'
                 'no_empleados' => $AsistenciaE->No_Empleado,
                 'No_Tag' => $AsistenciaE->No_TAG,
                 'tipo_evento' => $evento->tipo_evento, // O $optionsave si tipo_evento no está en el modelo de evento
                 'nombre_empleado' => $nombre,
                 'Departamento' => $departamento,
                 'Puesto' => $puesto,
-                'asistencia' => 'Presente', // Si estás marcando la asistencia como presente
+                'asistencia' => '2', // Si estás marcando la asistencia como presente, pero para efectos practicos se coloca 2
                 'Planta' => $AsistenciaE->Id_Planta,
                 // Las columnas 'created_at' y 'updated_at' se llenan automáticamente si tu modelo usa timestamps
             ]);

@@ -6,6 +6,7 @@ use App\Departamentos;
 use Illuminate\Http\Request;
 use App\RegistrarAsistencias;
 use App\RegistrarEventos;
+use App\RegistroPapelTemporal;
 use App\Tbl_Empleado_SIA;
 use App\Puestos;
 use Dompdf\Dompdf;
@@ -111,9 +112,46 @@ class ReportesEventosController extends Controller
         $reportes = $reportesQuery->get();
 
         $totalRegistros = $reportes->count();
+        
+        //Inicio de apartado  de la seccion del codigo implementado para la tabla de Entrega de Papel 
+        $eventoPapel = RegistroPapelTemporal::all();
+        // Obtiene los meses y años únicos de los registros
+        $mesesAniosPapel = RegistroPapelTemporal::selectRaw("DATE_FORMAT(created_at, '%Y-%m') as fecha")
+            ->distinct()
+            ->get();
+        $mesesSeleccionPapel = RegistroPapelTemporal::selectRaw("DATE_FORMAT(created_at, '%Y-%m') as fecha")
+            ->distinct()
+            ->get();
+
+        // Inicializa un arreglo para los valores de selección de fechas
+        $fechasSeleccionPapel = [];
+
+        foreach ($mesesAniosPapel as $mesAnioPapel) {
+            $fecha = \Carbon\Carbon::parse($mesAnioPapel->fecha);
+            $fechasSeleccionPapel[$mesAnioPapel->fecha] = $fecha->format('F Y');
+            //dd($fechasSeleccion);
+        }
+
+        // Obtiene la fecha seleccionada desde la solicitud
+        $fechaPapel = $request->created_at;
+
+        // Inicializa la consulta de reportes sin filtros de fecha
+        $reportesQueryPapel = RegistroPapelTemporal::select('id', 'id_evento', 'no_empleados', 'No_Tag', 'tipo_evento', 'nombre_empleado', 'Puesto', 'created_at', 'asistencia', 'Planta', 'Departamento');
+
+        // Si se seleccionó una fecha, filtra por ese rango
+        if ($fechaPapel) {
+            $reportesQueryPapel->whereDate('created_at', $fechaPapel);
+        }
+
+        // Obtiene los reportes de asistencia
+        $reportesPapel = $reportesQueryPapel->get();
+
+        $totalRegistrosPapel = $reportesPapel->count();
 
         // Devuelve la vista 'eventos.ReportesEventos' con los reportes y las fechas únicas
-        return view('eventos.ReportesEventos', compact('eventos', 'reportes', 'totalRegistros', 'optionsave', 'nombre', 'fechasSeleccion', 'request','fecha','mesesSeleccion','mes'));
+        return view('eventos.ReportesEventos', compact('eventos', 'reportes', 'totalRegistros', 'optionsave', 'nombre', 'fechasSeleccion', 'request','fecha','mesesSeleccion','mes',
+                                                'eventoPapel', 'mesesAniosPapel', 'mesesSeleccionPapel', 'fechasSeleccionPapel', 'fechaPapel', 
+                                                'reportesQueryPapel', 'reportesPapel', 'totalRegistrosPapel'));
 
 
     }
@@ -157,6 +195,79 @@ class ReportesEventosController extends Controller
         // Resto de tu código para configurar el objeto PDF
         $datosReporte = [
             'eventos' => $eventos,
+            'reportesQuery' => $reportesQuery,
+            'totalRegistros' => $totalRegistros,
+            'optionsave' => $optionsave,
+            'nombre' => $nombre,
+            'request' => $request,
+            'mes' => $mes,
+            'mesesSeleccion' => $mesesSeleccion,
+            'encabezadoColumna' => $encabezadoColumna,
+
+        ];
+
+        // Renderiza la vista directamente
+        $pdfView = view('eventos.PDFReportView', compact('datosReporte'))->render();
+
+        // Configura el objeto PDF
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isPhpEnabled', true);
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($pdfView);
+        $dompdf->setPaper('A4', 'landscape');
+
+        // Renderiza el PDF
+        $nombreArchivo = 'Reporte' . ' ' . $nombre;
+
+        $dompdf->render($nombreArchivo);
+
+        if ($request->has('excel')) {
+         // dd($request->all());  // Redirige a la ruta de exportarExcel
+            return redirect()->route('eventos.exportarExcel', $request->all());
+        }
+
+        return $dompdf->stream($nombreArchivo);
+    }
+
+    public function GenerarReportePapel(Request $request)
+    {
+        
+        // Obtiene el evento y el mes seleccionado desde la solicitud
+  
+        $mes = $request->input('created_at');
+        //dd($mes);
+        // Obtiene todos los eventos registrados
+
+        // Obtiene el tipo de evento seleccionado desde la solicitud
+        $optionsave = 5;
+
+        $nombre = 'Entrega de Papel';
+
+        // Obtiene los meses y años únicos de los registros
+        $mesesSeleccion = RegistroPapelTemporal::selectRaw("DATE_FORMAT(created_at, '%Y-%m') as fecha")
+
+            ->distinct()
+            ->get();
+
+        // Inicializa la consulta de reportes sin filtros de fecha
+        $reportesQuery = RegistroPapelTemporal::select('id', 'id_evento', 'no_empleados', 'No_Tag', 'tipo_evento', 'nombre_empleado', 'Puesto', 'created_at', 'asistencia', 'Planta', 'Departamento')
+            ->whereYear('created_at', '=', substr($mes, 0, 4))
+            ->whereMonth('created_at', '=', substr($mes, 5, 2))
+            ->get();
+
+        // Cambiar el encabezado de la columna "Asistencia" a "Rollos entregados" si la opción seleccionada es "5"
+        $encabezadoColumna = ($optionsave == '5') ? 'Rollos' : 'Asistencia';
+
+        // Obtiene el número total de registros
+        $totalRegistros = $reportesQuery->count();
+
+        // Devuelve la vista 'eventos.ReportesEventos' con los reportes y las fechas únicas
+        // Aquí debes crear o inicializar tu objeto PDF
+        // Resto de tu código para configurar el objeto PDF
+        $datosReporte = [
+
             'reportesQuery' => $reportesQuery,
             'totalRegistros' => $totalRegistros,
             'optionsave' => $optionsave,

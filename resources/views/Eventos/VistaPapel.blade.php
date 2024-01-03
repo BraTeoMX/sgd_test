@@ -7,7 +7,7 @@
         <div class="col-12"> {{-- Columna con ancho completo en dispositivos grandes --}}
             <div class="card"> {{-- Tarjeta de presentación --}}
                 <div class="card-header">
-                    <h1 class= "textoH1">Evento: Papel</h1> {{-- Título en la cabecera de la tarjeta --}}
+                    <h1 class= "textoH1">Evento: Entrega de Papel</h1> {{-- Título en la cabecera de la tarjeta --}}
                     @if (auth()->user()->hasRole('Seguridad e Higiene') ||
                             auth()->user()->hasRole('Administrador Sistema') ||
                             auth()->user()->hasRole('Jefe Administrativo'))

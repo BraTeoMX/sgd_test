@@ -229,3 +229,5 @@ Route::get('VistaPapel','VistaPapelController@VistaPapel')->name('eventos.VistaP
 
 // Ruta para procesar el formulario
 Route::post('RegistroVistaPapel', 'VistaPapelController@RegistroVistaPapel')->name('eventos.RegistroVistaPapel');
+
+Route::post('GenerarReportesPapel', 'ReportesEventosController@GenerarReportePapel')->name('eventos.GenerarReportePapel');

@@ -12,6 +12,7 @@
         <h1>Generar reporte {{ $nombre }}</h1>
     </div>
     <div class="container">
+        @if (auth()->user()->hasRole('Administrador Sistema'))
         <form method="POST" action="{{ route('eventos.GenerarReporte') }}">
             @csrf
             <div class="form-group">
@@ -45,6 +46,35 @@
                 <img class="avatar avatar-xss avatar-4by3 mr-2" src="{{ asset('materialfront/assets/svg/brands/excel.svg') }}" alt="Excel">
             </button>
         </form>
+
+        <br>
+        @endif
+        @if (auth()->user()->hasRole('Seguridad e Higiene'))
+        <h1>Entrega de Papel</h1>
+        <form method="POST" action="{{ route('eventos.GenerarReportePapel') }}">
+            @csrf
+            <div >
+                <select name="created_at" id="created_at" class="form-control">
+                    <option value="">Selecciona un mes</option>
+                    @foreach ($mesesSeleccionPapel as $mes)
+                        <option value="{{ $mes->fecha }}">{{ $mes->fecha }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary" id="registrarBtnPapel">
+                Generar reporte PDF
+                <img class="avatar avatar-xss avatar-4by3 mr-2" src="{!! asset('materialfront/assets/svg/brands/pdf.svg') !!}" alt="PDF">
+            </button>
+            <button type="submit" name = "excel" class="btn btn-primary" id="registrarBtnExcelPapel">
+                Generar reporte Excel
+                <img class="avatar avatar-xss avatar-4by3 mr-2" src="{{ asset('materialfront/assets/svg/brands/excel.svg') }}" alt="Excel">
+            </button>
+        </form>
+        <br>
+        <br>
+        <br>
+        @endif
 
     </div>
 </div>
